@@ -2,12 +2,16 @@ import { fetchTests } from "./actions";
 import DashboardPage from "./DashboardPage";
 import AuthGuard from "../guards/AuthGuard";
 
-export default async function Page() {
+async function DashboardComponent() {
   const tests = await fetchTests();
 
+  return <DashboardPage tests={tests} />;
+}
+
+export default function Page() {
   return (
     <AuthGuard>
-      <DashboardPage tests={tests} />
+      <DashboardComponent />
     </AuthGuard>
   );
 }
