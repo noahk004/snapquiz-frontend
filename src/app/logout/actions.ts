@@ -21,6 +21,9 @@ export async function logout() {
       throw new Error("Failed to logout");
     }
 
+    // Delete the cookie on the frontend
+    (await cookies()).delete("token");
+
     // Redirect to login page
     redirect("/login");
   } catch (error) {
