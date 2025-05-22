@@ -1,16 +1,10 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  BookOpen,
-  FileText,
-  CheckCircle,
-  Zap,
   Brain,
-  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroAnimation from "@/components/hero-animation";
-import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
   return (

@@ -118,7 +118,7 @@ export default async function TestPreviewPage({
           </div>
 
           {/* Previous Attempts */}
-          <Card className="mt-8">
+          <Card className="mt-8 mb-0 pb-0">
             <CardHeader>
               <div className="flex items-center">
                 <HistoryIcon className="mr-2 h-5 w-5" />
@@ -129,7 +129,7 @@ export default async function TestPreviewPage({
             <CardContent>
               {testData.attempts.length > 0 ? (
                 <div className="space-y-4">
-                  {testData.attempts.map((attempt: any, index: number) => (
+                  {testData.attempts.map((attempt: { id: string; date: string; score: number }, index: number) => (
                     <div key={attempt.id}>
                       {index > 0 && <Separator className="my-4" />}
                       <div className="flex items-center justify-between">
@@ -164,7 +164,7 @@ export default async function TestPreviewPage({
                 <p className="text-center text-muted-foreground py-6">You haven&apos;t attempted this test yet.</p>
               )}
             </CardContent>
-            <CardFooter className="flex justify-center border-t bg-muted/50 px-6 py-4 pb-2">
+            <CardFooter className="flex justify-center border-t bg-muted/50 px-6 pb-6">
               <Link href={`/dashboard/tests/${params.id}/take`} passHref>
                 <Button variant="outline" className="w-full cursor-pointer">
                   <PlayIcon className="h-4 w-4" />

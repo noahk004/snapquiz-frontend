@@ -11,7 +11,7 @@ import { MetaTest } from "../types";
 import TestListCard from "@/components/test-list-card";
 
 export default function DashboardPage({ tests }: { tests: MetaTest[] | null }) {
-  tests = tests?.sort((a, b) => new Date(b.generated_at).getTime() - new Date(a.generated_at).getTime());
+  const sortedTests = tests?.sort((a, b) => new Date(b.generated_at).getTime() - new Date(a.generated_at).getTime()) ?? null;
 
   return (
     <div className="container mx-auto py-10 space-y-8">
@@ -56,8 +56,8 @@ export default function DashboardPage({ tests }: { tests: MetaTest[] | null }) {
         <Tabs defaultValue="grid" className="w-full">
           <div className="flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              Showing <strong>{tests ? tests.length : 0}</strong> test
-              {tests && tests.length > 1 && "s"}
+              Showing <strong>{sortedTests ? sortedTests.length : 0}</strong> test
+              {sortedTests && sortedTests.length > 1 && "s"}
             </div>
             <TabsList>
               <TabsTrigger value="grid">Grid</TabsTrigger>
@@ -66,7 +66,7 @@ export default function DashboardPage({ tests }: { tests: MetaTest[] | null }) {
           </div>
           <TabsContent value="grid" className="mt-6">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {tests?.map((test: MetaTest) => (
+              {sortedTests?.map((test: MetaTest) => (
                 <TestCard
                   key={test.id}
                   id={test.id}
@@ -79,7 +79,7 @@ export default function DashboardPage({ tests }: { tests: MetaTest[] | null }) {
           </TabsContent>
           <TabsContent value="list" className="mt-6">
             <div className="grid gap-4">
-              {tests?.map((test: MetaTest) => (
+              {sortedTests?.map((test: MetaTest) => (
                 <TestListCard
                   key={test.id}
                   id={test.id}
