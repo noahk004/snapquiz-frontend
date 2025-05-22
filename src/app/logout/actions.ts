@@ -1,6 +1,5 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function logout() {
@@ -21,15 +20,11 @@ export async function logout() {
       throw new Error("Failed to logout");
     }
 
-    // Delete the cookie on the frontend
-    (await cookies()).delete("token");
-
     // Redirect to login page
     redirect("/login");
   } catch (error) {
     console.error("Logout error:", error);
-    // Still try to delete the cookie and redirect even if the API call fails
-    (await cookies()).delete("token");
+    // Still redirect even if the API call fails
     redirect("/login");
   }
 }
