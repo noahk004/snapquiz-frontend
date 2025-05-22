@@ -3,11 +3,15 @@ import ViewAttemptComponent, {
   QuizData,
 } from "@/components/ViewAttemptComponent";
 
-export default async function TestAttemptPage({
-  params,
-}: {
-  params: { id: string; attemptId: string };
-}) {
+type Props = {
+  params: {
+    id: string;
+    attemptId: string;
+  };
+  searchParams: Record<string, string | string[] | undefined>;
+};
+
+export default async function TestAttemptPage({ params }: Props) {
   let testData: QuizData | null = null;
   try {
     const cookieStore = await cookies();
@@ -30,7 +34,7 @@ export default async function TestAttemptPage({
     testData = await data.json();
 
     if (!testData || testData.error) {
-      throw new Error(testData!.error);
+      throw new Error(testData?.error);
     }
 
     console.log(testData);
@@ -38,5 +42,5 @@ export default async function TestAttemptPage({
     console.error("Error fetching test data:", error);
   }
 
-  return <ViewAttemptComponent testData={testData as QuizData} />;
+  return <ViewAttemptComponent testData={testData} />;
 }
