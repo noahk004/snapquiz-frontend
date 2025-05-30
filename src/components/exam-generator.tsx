@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { useState } from "react";
-import { Upload, FileText, Loader2 } from "lucide-react";
+import { Upload, FileText, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,43 +17,68 @@ import {
 } from "@/components/ui/card";
 import { Slider } from "./slider";
 import { redirect } from "next/navigation";
+import { Info } from "lucide-react";
 
 export default function ExamGenerator() {
   const [file, setFile] = useState<File | null>(null);
-//   const [title, setTitle] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [questionCount, setQuestionCount] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null); // Clear any previous errors
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        setError(
+          `File size exceeds 10MB limit. Current size: ${(
+            selectedFile.size /
+            (1024 * 1024)
+          ).toFixed(2)}MB`
+        );
+        e.target.value = ""; // Clear the file input
+        setFile(null);
+        return;
+      }
+
+      setFile(selectedFile);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
-    if (!file/* || !title */) return;
+    if (!file) {
+      setError("Please select a file to upload");
+      return;
+    }
 
     setIsLoading(true);
 
-    const formData = new FormData()
-    formData.append("file", file)
-    // formData.append("title", title)
-    formData.append("questionCount", questionCount.toString())
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tests/generate`, {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    })
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("questionCount", questionCount.toString());
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/tests/generate`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      }
+    );
 
-    console.log(response)
+    console.log(response);
 
     setIsLoading(false);
     if (response.ok) {
       redirect("/dashboard");
     } else {
-      console.error("Failed to generate exam.");
+      setError(
+        "Something went wrong while generating the exam. Please try again."
+      );
     }
   };
 
@@ -67,17 +92,13 @@ export default function ExamGenerator() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* <div className="space-y-2">
-            <Label htmlFor="title">Exam Title</Label>
-            <Input
-              id="title"
-              placeholder="Enter exam title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              disabled={isLoading}
-            />
-          </div> */}
+          <Card className="py-4 px-4 border-blue-200 border-2 bg-blue-50">
+            <CardDescription>
+              <Info className="w-5 h-5 inline-block mr-2" />
+              Please upload PDFs with selectable text. SnapQuiz doesn&apos;t
+              support image-only PDFs yet.
+            </CardDescription>
+          </Card>
 
           <div className="space-y-2">
             <Label htmlFor="document">Upload Document</Label>
@@ -140,15 +161,22 @@ export default function ExamGenerator() {
             </div>
             <div className="flex justify-between text-xs text-gray-500 px-1">
               <span>3</span>
-              <span>15</span>
+              <span>12</span>
+              <span>21</span>
               <span>30</span>
             </div>
           </div>
 
+          {error && (
+              <div className="flex items-center gap-2 text-red-600 bg-red-50 p-2 rounded-md text-sm mb-4">
+                <AlertCircle className="w-4 h-4" />
+                {error}
+              </div>
+            )}
           <Button
             type="submit"
             className="w-full cursor-pointer mb-2"
-            disabled={isLoading || !file/* || !title */}
+            disabled={isLoading || !file}
           >
             {isLoading ? (
               <span className="flex items-center">
