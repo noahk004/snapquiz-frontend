@@ -3,6 +3,8 @@ import ViewAttemptComponent, {
   QuizData,
 } from "@/components/ViewAttemptComponent";
 
+import AuthGuard from "@/components/guards/AuthGuard";
+
 type Props = {
   params: {
     id: string;
@@ -42,5 +44,9 @@ export default async function TestAttemptPage({ params }: Props) {
     console.error("Error fetching test data:", error);
   }
 
-  return <ViewAttemptComponent testData={testData} />;
+  return (
+    <AuthGuard>
+      <ViewAttemptComponent testData={testData} />
+    </AuthGuard>
+  );
 }

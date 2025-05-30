@@ -1,6 +1,6 @@
 import { fetchTests } from "./actions";
 import DashboardPage from "./DashboardPage";
-import AuthGuard from "../guards/AuthGuard";
+import AuthGuard from "@/components/guards/AuthGuard";
 
 async function DashboardComponent() {
   const tests = await fetchTests();
